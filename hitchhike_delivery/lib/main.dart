@@ -22,8 +22,8 @@ class MyApp extends StatelessWidget {
         // or simply save your changes to "hot reload" in a Flutter IDE).
         // Notice that the counter didn't reset back to zero; the application
         // is not restarted.
-        primarySwatch: Colors.blue,
-        primaryColor: Color(0xFF800000)
+        accentColor: Color(0xFFFA0025),
+        primaryColor: Color(0xFFCD001F)
       ),
       home: MyHomePage(title: 'Flutter Demo Home Page'),
     );
@@ -80,7 +80,7 @@ class _MyHomePageState extends State<MyHomePage> {
       body: _activities[_pageIndex],
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _pageIndex,
-        selectedItemColor: Colors.amber,
+        selectedItemColor: Theme.of(context).accentColor,
         onTap: _onBottomBarTapped,
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(
