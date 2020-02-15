@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:qr_mobile_vision/qr_camera.dart';
 
@@ -7,23 +8,19 @@ class ScanWidget extends StatefulWidget {
 }
 
 class _ScanState extends State<ScanWidget> {
-  String text = "hi";
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        SizedBox(
-          width: 300,
-          height: 300,
-          child: QrCamera(qrCodeCallback: (code) {
-            setState(() {
-              text = code;
-            });
-          }),
-        ),
-        Text(text)
-      ]
-    );
+    return Column(children: [
+      SizedBox(
+        width: 440,
+        height: 672,
+        child: QrCamera(qrCodeCallback: (code) {
+          Scaffold.of(context).showSnackBar(SnackBar(
+            content: Text(code),
+            duration: Duration(seconds: 1),
+          ));
+        }),
+      ),
+    ]);
   }
-  
 }

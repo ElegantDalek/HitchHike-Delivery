@@ -32,7 +32,11 @@ class _ExploreState extends State<ExploreWidget> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      floatingActionButton: FloatingActionButton(onPressed: () {}, child: Icon(Icons.navigation)),
+      floatingActionButton: FloatingActionButton(onPressed: () {
+        Scaffold.of(context).showSnackBar(
+          SnackBar(content: Text('Button pressed'),)
+        );
+      }, child: Icon(Icons.navigation)),
         body: GoogleMap(
       onMapCreated: _onMapCreated,
       markers: _markers,
