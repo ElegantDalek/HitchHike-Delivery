@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:hitchhike_delivery/profile.dart';
+import 'package:hitchhike_delivery/scan.dart';
 
 import 'explore.dart';
 
@@ -21,6 +23,7 @@ class MyApp extends StatelessWidget {
         // Notice that the counter didn't reset back to zero; the application
         // is not restarted.
         primarySwatch: Colors.blue,
+        primaryColor: Color(0xFF800000)
       ),
       home: MyHomePage(title: 'Flutter Demo Home Page'),
     );
@@ -50,8 +53,8 @@ class _MyHomePageState extends State<MyHomePage> {
   int _pageIndex = 0;
   final List<Widget> _activities = [
     ExploreWidget(Colors.amber),
-    ExploreWidget(Colors.green),
-    ExploreWidget(Colors.red)
+    ScanWidget(),
+    ProfileWidget()
   ];
 
   void _onBottomBarTapped(int index) {
