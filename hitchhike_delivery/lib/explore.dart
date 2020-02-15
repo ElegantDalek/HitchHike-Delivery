@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
@@ -10,7 +11,19 @@ class ExploreWidget extends StatefulWidget {
 
 class _ExploreState extends State<ExploreWidget> {
   GoogleMapController mapController;
-  final LatLng _center = const LatLng(41.8, -87.6);
+  final LatLng _center = const LatLng(41.7948, -87.5917);
+
+  final _markers = {
+    Marker(
+      markerId: MarkerId("Hyde park"),
+      position: LatLng(41.7948, -87.5917),
+      infoWindow: InfoWindow(
+        title: 'Hyde park',
+        snippet: '5 star rating!'
+      ),
+      icon: BitmapDescriptor.defaultMarker,
+    )
+  };
 
   void _onMapCreated(GoogleMapController controller) {
     mapController = controller;
@@ -18,13 +31,15 @@ class _ExploreState extends State<ExploreWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return GoogleMap(
+    return Scaffold(
+      floatingActionButton: FloatingActionButton(onPressed: () {}, child: Icon(Icons.navigation)),
+        body: GoogleMap(
       onMapCreated: _onMapCreated,
+      markers: _markers,
       initialCameraPosition: CameraPosition(
         target: _center,
-        zoom: 30.0,
+        zoom: 15.0,
       ),
-    );
+    ));
   }
-  
 }
