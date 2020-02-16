@@ -1,4 +1,7 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:flutter_bluetooth_serial/flutter_bluetooth_serial.dart';
 import 'package:hitchhike_delivery/profile.dart';
 import 'package:hitchhike_delivery/scan.dart';
 
@@ -53,9 +56,66 @@ class _MyHomePageState extends State<MyHomePage> {
   int _pageIndex = 0;
   final List<Widget> _activities = [
     ExploreWidget(Colors.amber),
-    ScanWidget(),
+    ScanWidget(toggleCooler),
     ProfileWidget()
   ];
+
+  static bool locked = false;
+  static bool isConnecting = true;
+  static bool isDisconnecting = false;
+  static bool get isConnected => connection != null && connection.isConnected;
+  static final TextEditingController textEditingController = new TextEditingController();
+
+  // Get the instance of the bluetooth
+  FlutterBluetoothSerial bluetooth = FlutterBluetoothSerial.instance;
+
+  static BluetoothConnection connection;
+
+  static void toggleCooler() {
+    print('toggle sent!');
+    if (locked) {
+      _sendMessage('u');
+    } else {
+      _sendMessage('l');
+    }
+    locked = !locked;
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    bluetooth = FlutterBluetoothSerial.instance;
+    bluetoothConnectionState();
+  }
+
+  Future<void> bluetoothConnectionState() async {
+    BluetoothConnection.toAddress('98:D3:32:10:F7:8B').then((_connection) {
+      print('Connected to the device');
+      connection = _connection;
+      setState(() {
+        isConnecting = false;
+        isDisconnecting = false;
+      });
+    });
+
+    connection.input.listen((data) => {print('got data!')});
+  }
+
+  static void _sendMessage(String text) async {
+    text = text.trim();
+    textEditingController.clear();
+
+    if (text.length > 0)  {
+      try {
+        connection.output.add(utf8.encode(text + "\r\n"));
+        await connection.output.allSent;
+      }
+      catch (e) {
+        // Ignore error, but notify state
+      }
+    }
+  }
+
 
   void _onBottomBarTapped(int index) {
     setState(() {

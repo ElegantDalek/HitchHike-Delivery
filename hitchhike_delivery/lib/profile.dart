@@ -35,48 +35,50 @@ class ProfileWidget extends StatelessWidget {
     );
   }
 
-  Widget _historyCard(String amount, String from, String to) {
+  static Widget historyCard(String amount, String from, String to) {
     return Container(
         padding: EdgeInsets.only(left: 10, bottom: 5, right: 10),
-        child: Card(
-            elevation: 2,
+        child: Card(elevation: 2, child: historyContent(amount, from, to)));
+  }
+
+  static Widget historyContent(String amount, String from, String to) {
+    return Row(
+      children: [
+        Expanded(
             child: Row(
-              children: [
-                Expanded(
-                    child: Row(
-                  children: <Widget>[
-                    Container(
-                      padding: EdgeInsets.only(left: 20),
-                      width: 150,
-                      child: Text(
-                        from,
-                        style: TextStyle(fontSize: 18),
-                      ),
-                    ),
-                    Icon(
-                      Icons.arrow_forward_ios,
-                      size: 40,
-                    ),
-                    Container(
-                      padding: EdgeInsets.only(),
-                      width: 100,
-                      child: Text(
-                        to,
-                        style: TextStyle(fontSize: 20),
-                      ),
-                    ),
-                  ],
-                )),
-                Container(
-                    padding: EdgeInsets.all(10),
-                    child: CircleAvatar(
-                      child: Text('\$' + amount,
-                          style: TextStyle(fontSize: 30, color: Colors.white)),
-                      backgroundColor: Colors.lightGreen,
-                      radius: 50,
-                    ))
-              ],
-            )));
+          children: <Widget>[
+            Container(
+              padding: EdgeInsets.only(left: 20),
+              width: 150,
+              child: Text(
+                from,
+                style: TextStyle(fontSize: 18),
+              ),
+            ),
+            Icon(
+              Icons.arrow_forward_ios,
+              size: 40,
+            ),
+            Container(
+              padding: EdgeInsets.only(),
+              width: 100,
+              child: Text(
+                to,
+                style: TextStyle(fontSize: 20),
+              ),
+            ),
+          ],
+        )),
+        Container(
+            padding: EdgeInsets.all(10),
+            child: CircleAvatar(
+              child: Text('\$' + amount,
+                  style: TextStyle(fontSize: 30, color: Colors.white)),
+              backgroundColor: Colors.lightGreen,
+              radius: 50,
+            ))
+      ],
+    );
   }
 
   @override
@@ -88,13 +90,13 @@ class ProfileWidget extends StatelessWidget {
           color: Colors.black,
         ),
         _walletAmount(),
-        _historyCard('2.30', 'First & Armory', 'Transit Plaza'),
-        _historyCard('4.50', 'Wright & Chalmers', 'Goodwin & Main'),
-        _historyCard('2.30', 'First & Armory', 'Transit Plaza'),
-        _historyCard('2.30', 'First & Armory', 'Transit Plaza'),
-        _historyCard('2.30', 'First & Armory', 'Transit Plaza'),
-        _historyCard('2.30', 'First & Armory', 'Transit Plaza'),
-        _historyCard('2.30', 'First & Armory', 'Transit Plaza'),
+        historyCard('2.30', 'First & Armory', 'Transit Plaza'),
+        historyCard('4.50', 'Wright & Chalmers', 'Goodwin & Main'),
+        historyCard('2.30', 'First & Armory', 'Transit Plaza'),
+        historyCard('2.30', 'First & Armory', 'Transit Plaza'),
+        historyCard('2.30', 'First & Armory', 'Transit Plaza'),
+        historyCard('2.30', 'First & Armory', 'Transit Plaza'),
+        historyCard('2.30', 'First & Armory', 'Transit Plaza'),
       ],
     );
   }

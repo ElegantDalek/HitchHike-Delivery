@@ -1,9 +1,11 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:flutter_mapbox_navigation/flutter_mapbox_navigation.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:hitchhike_delivery/map_request.dart';
-import 'package:location/location.dart';
+import 'package:hitchhike_delivery/profile.dart';
+import 'package:location/location.dart' as googlelocation;
 
 class ExploreWidget extends StatefulWidget {
   final Color color;
@@ -17,23 +19,19 @@ class _ExploreState extends State<ExploreWidget> {
   static LatLng latLng;
   BitmapDescriptor locationIcon;
   GoogleMapsServices _googleMapsServices = GoogleMapsServices();
-  LocationData currentLocation;
+  googlelocation.LocationData currentLocation;
   bool loading = true;
   final Set<Polyline> _polyLines = {};
   Set<Polyline> get polyLines => _polyLines;
   Completer<GoogleMapController> _controller = Completer();
+  MapboxNavigation _directions;
 
-  var _markers = {
-    Marker(
-      markerId: MarkerId("Hyde park"),
-      position: LatLng(41.7948, -87.5917),
-      infoWindow: InfoWindow(title: 'Hyde park', snippet: '5 star rating!'),
-      icon: BitmapDescriptor.defaultMarker,
-    )
-  };
+  var _markers = Set<Marker>();
 
   @override
   void initState() {
+    super.initState();
+    _addMarker(LatLng(41.7948, -87.5917), 'Hyde park');
     getLocation();
     loading = true;
     BitmapDescriptor.fromAssetImage(
@@ -41,7 +39,23 @@ class _ExploreState extends State<ExploreWidget> {
         .then((onValue) {
       locationIcon = onValue;
     });
-    super.initState();
+
+    _directions = MapboxNavigation(onRouteProgress: (arrived) async {
+      if (arrived) await _directions.finishNavigation();
+    });
+  }
+
+  void startNavigation() async {
+    final cityhall =
+        Location(name: "City Hall", latitude: 42.886448, longitude: -78.878372);
+    final downtown = Location(
+        name: "Downtown Buffalo", latitude: 42.8866177, longitude: -78.8814924);
+    await _directions.startNavigation(
+        origin: cityhall,
+        destination: downtown,
+        mode: NavigationMode.drivingWithTraffic,
+        simulateRoute: false,
+        language: "French");
   }
 
   @override
@@ -49,10 +63,9 @@ class _ExploreState extends State<ExploreWidget> {
     return Scaffold(
         floatingActionButton: FloatingActionButton(
             onPressed: () {
-              // _moveToCurrentLocation();
-              sendRequest();
+              _moveToCurrentLocation();
             },
-            child: Icon(Icons.navigation)),
+            child: Icon(Icons.center_focus_strong)),
         body: GoogleMap(
           onMapCreated: _onMapCreated,
           markers: _markers,
@@ -69,7 +82,7 @@ class _ExploreState extends State<ExploreWidget> {
   }
 
   getLocation() async {
-    var location = new Location();
+    var location = googlelocation.Location();
     location.onLocationChanged().listen((currentLocation) {
       if (ModalRoute.of(context).isActive) {
         setState(() {
@@ -90,8 +103,57 @@ class _ExploreState extends State<ExploreWidget> {
     _markers.add(Marker(
         markerId: MarkerId("112"),
         position: location,
-        infoWindow: InfoWindow(title: address, snippet: "go here"),
-        icon: BitmapDescriptor.defaultMarker));
+        icon: BitmapDescriptor.defaultMarker,
+        onTap: (() {
+              sendRequest();
+              showBottomSheet(
+                  context: context,
+                  builder: (BuildContext bc) {
+                    return bottomSheet(location, address);
+                  });
+            })
+            
+            ));
+  }
+
+  Widget bottomSheet(LatLng location, String address) {
+    return Container(
+        height: 200,
+        width: 500,
+        child: Column(
+          children: <Widget>[
+            ProfileWidget.historyContent("4.00", address, "Transit Plaza"),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: <Widget>[
+                ActionChip(
+                    avatar: CircleAvatar(
+                      child: Icon(Icons.directions),
+                      backgroundColor: Colors.transparent,
+                      foregroundColor: Colors.white,
+                    ),
+                    padding: EdgeInsets.all(10),
+                    backgroundColor: Colors.blue,
+                    onPressed: () {
+                      startNavigation();
+                    },
+                    label: Text(
+                      'Navigate',
+                      style: TextStyle(fontSize: 20, color: Colors.white),
+                    )),
+                ChoiceChip(
+                  label: Row(
+                    children: <Widget>[
+                      Icon(Icons.directions_bike),
+                      Text('Bike')
+                    ],
+                  ),
+                  selected: false,
+                )
+              ],
+            )
+          ],
+        ));
   }
 
   Future<void> _moveToCurrentLocation() async {
@@ -137,11 +199,13 @@ class _ExploreState extends State<ExploreWidget> {
   }
 
   void createRoute(String encondedPoly) {
-    _polyLines.add(Polyline(
-        polylineId: PolylineId(latLng.toString()),
-        width: 4,
-        points: _convertToLatLng(_decodePoly(encondedPoly)),
-        color: Colors.red));
+    setState(() {
+      _polyLines.add(Polyline(
+          polylineId: PolylineId(latLng.toString()),
+          width: 4,
+          points: _convertToLatLng(_decodePoly(encondedPoly)),
+          color: Colors.red));
+    });
   }
 
   List<LatLng> _convertToLatLng(List points) {
