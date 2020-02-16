@@ -71,16 +71,18 @@ class _ExploreState extends State<ExploreWidget> {
   getLocation() async {
     var location = new Location();
     location.onLocationChanged().listen((currentLocation) {
-      setState(() {
-        latLng = LatLng(currentLocation.latitude, currentLocation.longitude);
-        _markers.add(Marker(
-            markerId: MarkerId("Current location"),
-            position: latLng,
-            infoWindow:
-                InfoWindow(title: 'Your location', snippet: '5 star rating!'),
-            icon: locationIcon));
-      });
-      loading = false;
+      if (ModalRoute.of(context).isActive) {
+        setState(() {
+          latLng = LatLng(currentLocation.latitude, currentLocation.longitude);
+          _markers.add(Marker(
+              markerId: MarkerId("Current location"),
+              position: latLng,
+              infoWindow:
+                  InfoWindow(title: 'Your location', snippet: '5 star rating!'),
+              icon: locationIcon));
+        });
+        loading = false;
+      }
     });
   }
 
@@ -102,7 +104,7 @@ class _ExploreState extends State<ExploreWidget> {
     LatLng destination = LatLng(41.7948, -87.5917);
     String route =
         await _googleMapsServices.getRouteCoordinates(latLng, destination);
-        print(route);
+    print(route);
     createRoute(route);
   }
 
