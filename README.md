@@ -1,5 +1,7 @@
 # HitchHike Delivery
  Distributed package movement for efficient last mile delivery.
+ 
+ *Winner: Uncommon Hacks 2020 @ Uchicago, Best IOT Hack*
 
 HitchHike provides distributed package movement for efficient last mile delivery. Deliverers deliver packages part of the way to their destinations in exchange for a portion of the total delivery fee.
 
