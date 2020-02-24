@@ -14,11 +14,19 @@ description: A new Flutter project.
 version: 1.0.0+1
 
 environment:
-  sdk: ">=2.1.0 <3.0.0"
+  sdk: ">=2.2.0 <3.0.0"
 
 dependencies:
   flutter:
     sdk: flutter
+  google_maps_flutter: ^0.5.11
+  qr_mobile_vision: ^0.3.1
+  location: ^2.4.0
+  http: ^0.12.0+4
+  flutter_bluetooth_serial: ^0.2.2
+  flutter_mapbox_navigation: ^0.0.9
+  audioplayers: ^0.7.8
+  flutter_slidable: "^0.5.4"
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
@@ -40,6 +48,11 @@ flutter:
   # the material Icons class.
   uses-material-design: true
 
+  assets:
+    - assets/Profile.png
+    - assets/dribbble-check-mark.gif
+    - assets/blue-circle.png
+    - assets/scream.mp3
   # To add assets to your application, add an assets section, like this:
   # assets:
   #  - images/a_dot_burr.jpeg
