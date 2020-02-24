@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
 
 class ProfileWidget extends StatelessWidget {
   Widget _profileHeader() {
@@ -42,41 +43,74 @@ class ProfileWidget extends StatelessWidget {
   }
 
   static Widget historyContent(String amount, String from, String to) {
-    return Row(
-      children: [
-        Expanded(
-            child: Row(
-          children: <Widget>[
-            Container(
-              padding: EdgeInsets.only(left: 20),
-              width: 150,
-              child: Text(
-                from,
-                style: TextStyle(fontSize: 18),
+    return Slidable(
+      actionPane: SlidableDrawerActionPane(),
+      actionExtentRatio: 0.25,
+      child: Row(
+        children: [
+          Expanded(
+              child: Row(
+            children: <Widget>[
+              Container(
+                padding: EdgeInsets.only(left: 20),
+                width: 150,
+                child: Text(
+                  from,
+                  style: TextStyle(fontSize: 18),
+                ),
               ),
-            ),
-            Icon(
-              Icons.arrow_forward_ios,
-              size: 40,
-            ),
-            Container(
-              padding: EdgeInsets.only(),
-              width: 100,
-              child: Text(
-                to,
-                style: TextStyle(fontSize: 20),
+              Icon(
+                Icons.arrow_forward_ios,
+                size: 40,
               ),
-            ),
-          ],
-        )),
-        Container(
-            padding: EdgeInsets.all(10),
-            child: CircleAvatar(
-              child: Text('\$' + amount,
-                  style: TextStyle(fontSize: 30, color: Colors.white)),
-              backgroundColor: Colors.lightGreen,
-              radius: 50,
-            ))
+              Container(
+                padding: EdgeInsets.only(),
+                width: 100,
+                child: Text(
+                  to,
+                  style: TextStyle(fontSize: 20),
+                ),
+              ),
+            ],
+          )),
+          Container(
+              padding: EdgeInsets.all(10),
+              child: CircleAvatar(
+                child: Text('\$' + amount,
+                    style: TextStyle(fontSize: 30, color: Colors.white)),
+                backgroundColor: Colors.lightGreen,
+                radius: 50,
+              ))
+        ],
+      ),
+      // actions: <Widget>[
+      //   IconSlideAction(
+      //     caption: 'Archive',
+      //     color: Colors.blue,
+      //     icon: Icons.archive,
+      //   ),
+      //   IconSlideAction(
+      //     caption: 'Share',
+      //     color: Colors.indigo,
+      //     icon: Icons.share,
+      //   ),
+      // ],
+      secondaryActions: <Widget>[
+        IconSlideAction(
+          caption: '31 g',
+          color: Colors.green,
+          icon: Icons.power,
+        ),
+        IconSlideAction(
+          caption: 'Bus',
+          color: Colors.yellow,
+          icon: Icons.directions_bus,
+        ),
+        IconSlideAction(
+          caption: '.75 mi',
+          color: Colors.red,
+          icon: Icons.pin_drop,
+        ),
       ],
     );
   }
@@ -86,9 +120,6 @@ class ProfileWidget extends StatelessWidget {
     return ListView(
       children: <Widget>[
         _profileHeader(),
-        Divider(
-          color: Colors.black,
-        ),
         _walletAmount(),
         historyCard('2.30', 'First & Armory', 'Transit Plaza'),
         historyCard('4.50', 'Wright & Chalmers', 'Goodwin & Main'),
